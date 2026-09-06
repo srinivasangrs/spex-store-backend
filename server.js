@@ -167,3 +167,30 @@ app.get("/api/orders/:id", async (req, res) => {
 });
 
 app.listen(port, () => console.log(`SPEX API running at http://localhost:${port}`));
+const port = process.env.PORT || 5000;
+
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(SPEX API running on port ${port});
+  });
+}
+
+module.exports = app;
+
+app.get("/api/health", async (req, res) => {
+  try {
+    await pool.query("SELECT 1");
+
+    res.json({
+      success: true,
+      message: "SPEX API is running",
+      database: "connected"
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Database connection failed",
+      error: error.message
+    });
+  }
+});
